@@ -24,75 +24,7 @@ function toggleStage(id) {
   if (chev) chev.classList.toggle('open', !isOpen);
 }
 
-/* ── CONFIGURATOR (Trailers page) ── */
-const configState = { trim: 'Standard', color: 'Black', colorHex: '#1a1a1a', addons: {} };
-const addonNames = {
-  modular: 'Modular storage',
-  solar:   'Power & solar',
-  water:   'Water system',
-  kitchen: 'Kitchenette',
-  aircomp: 'Air compressor',
-  awning:  'Awning',
-  wheels:  'Wheel & tire pkg',
-  rack:    'Bike/gear rack'
-};
-
-function selectTrim(id, name) {
-  configState.trim = name;
-  document.querySelectorAll('.trim-card').forEach(c => c.classList.remove('selected'));
-  const card = document.getElementById('trim-' + id);
-  if (card) card.classList.add('selected');
-  updateSummary();
-}
-
-function selectColor(name, hex) {
-  configState.color = name;
-  configState.colorHex = hex;
-  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-  const sw = document.getElementById('swatch-' + name);
-  if (sw) sw.classList.add('active');
-  const label = document.getElementById('color-label');
-  if (label) label.textContent = name;
-  // Update all trim card previews
-  document.querySelectorAll('.trim-preview').forEach(p => p.style.background = hex);
-  updateSummary();
-}
-
-function toggleAddon(id) {
-  configState.addons[id] = !configState.addons[id];
-  const chk = document.getElementById('addon-' + id);
-  if (!chk) return;
-  if (configState.addons[id]) {
-    chk.classList.add('checked');
-    chk.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  } else {
-    chk.classList.remove('checked');
-    chk.innerHTML = '';
-  }
-  updateSummary();
-}
-
-function updateSummary() {
-  const selected = Object.keys(configState.addons)
-    .filter(k => configState.addons[k])
-    .map(k => addonNames[k]);
-  const addonsText = selected.length ? selected.join(', ') : 'No add-ons';
-  const full = configState.trim + ' — ' + configState.color + ' — ' + addonsText;
-
-  const summaryEl = document.getElementById('selection-summary');
-  if (summaryEl) summaryEl.textContent = full;
-
-  // Sync to quote form hidden fields
-  const qTrim   = document.getElementById('q-trim');
-  const qColor  = document.getElementById('q-color');
-  const qAddons = document.getElementById('q-addons');
-  if (qTrim)   qTrim.value   = configState.trim;
-  if (qColor)  qColor.value  = configState.color;
-  if (qAddons) qAddons.value = selected.length ? selected.join(', ') : 'None';
-
-  const qSummary = document.getElementById('quote-build-summary');
-  if (qSummary) qSummary.textContent = configState.trim + ' trim · ' + configState.color + (selected.length ? ' · Add-ons: ' + selected.join(', ') : ' · No add-ons selected');
-}
+/* ── CONFIGURATOR — handled inline in trailers.html ── */
 
 /* ── FIELD NOTES FILTER ── */
 function filterPosts(cat, btn) {
@@ -140,7 +72,7 @@ function initForms() {
         if (response.ok) {
           const successEl = form.querySelector('.form-success');
           if (successEl) { form.style.display = 'none'; successEl.style.display = 'block'; }
-          else { form.innerHTML = '<div class="form-success" style="display:block;"><p>✓ Message sent — Tyler and Kristen will be in touch within 2 business days.</p></div>'; }
+          else { form.innerHTML = '<div class="form-success" style="display:block;"><p>✓ Message sent — the Odyssey Team will be in touch within 2 business days.</p></div>'; }
         } else {
           throw new Error('Form submission failed');
         }
