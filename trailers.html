@@ -548,9 +548,8 @@ let selectedAddons = {};
 
 function updateAddonStates() {
   const included = TRIM_INCLUDED[currentTrim] || [];
-  const hasModular = included.includes('modular') || (selectedAddons['modular'] && !included.includes('modular'));
 
-  // Check modular selection state (either included in trim or checked)
+  // modular is active if it's included in the trim OR the customer has checked it
   const modularActive = included.includes('modular') || !!selectedAddons['modular'];
 
   // Update each add-on row
@@ -562,17 +561,19 @@ function updateAddonStates() {
     if (!row) return;
 
     if (included.includes(id)) {
-      // Trim includes this - grey out, show "Included in your trim"
+      // Trim includes this — grey out, show "Included in your trim"
       row.classList.add('addon-included');
       row.classList.remove('addon-locked', 'addon-locked-active');
       if (priceEl) {
         priceEl.innerHTML = '<span class="addon-included-label">Included in your trim</span>';
       }
-      // Uncheck if it was checked
       delete selectedAddons[id];
       if (check) check.classList.remove('checked');
+      const qtyEl = document.getElementById('qty-' + id);
+      if (qtyEl) qtyEl.style.display = 'none';
+
     } else if (REQUIRES_MODULAR.includes(id)) {
-      // Requires modular storage
+      // Requires modular storage — lock/unlock based on modularActive
       row.classList.remove('addon-included');
       if (modularActive) {
         row.classList.remove('addon-locked');
@@ -580,20 +581,20 @@ function updateAddonStates() {
       } else {
         row.classList.add('addon-locked');
         row.classList.remove('addon-locked-active');
-        // Uncheck if modular removed
         delete selectedAddons[id];
         if (check) check.classList.remove('checked');
         const qtyEl = document.getElementById('qty-' + id);
         if (qtyEl) qtyEl.style.display = 'none';
       }
-      if (priceEl) priceEl.innerHTML = 'TBD';
+      if (priceEl && priceEl.innerHTML.includes('Included')) priceEl.innerHTML = 'TBD';
+
     } else {
       // Normal selectable add-on
       row.classList.remove('addon-included','addon-locked','addon-locked-active');
       if (priceEl && priceEl.innerHTML.includes('Included')) priceEl.innerHTML = 'TBD';
     }
 
-    // Update tie-down notes
+    // Update tie-down notes based on modular status
     if (TIEDOWN_IDS.includes(id)) {
       const noteEl = document.getElementById('note-' + id);
       if (noteEl) {
@@ -609,7 +610,6 @@ function toggleAddon(id) {
   const included = TRIM_INCLUDED[currentTrim] || [];
   if (included.includes(id)) return; // included in trim, can't toggle
 
-  // Check modular dependency
   const modularActive = included.includes('modular') || !!selectedAddons['modular'];
   if (REQUIRES_MODULAR.includes(id) && !modularActive) return;
 
@@ -617,9 +617,10 @@ function toggleAddon(id) {
   if (!check) return;
 
   if (selectedAddons[id]) {
+    // Unchecking
     delete selectedAddons[id];
     check.classList.remove('checked');
-    // If modular unchecked, also uncheck dependents
+    // If unchecking modular, also uncheck dependents
     if (id === 'modular') {
       REQUIRES_MODULAR.forEach(dep => {
         delete selectedAddons[dep];
@@ -633,9 +634,10 @@ function toggleAddon(id) {
     const qtyEl = document.getElementById('qty-' + id);
     if (qtyEl) qtyEl.style.display = 'none';
   } else {
+    // Checking
     selectedAddons[id] = true;
     check.classList.add('checked');
-    // Show qty selector if applicable
+    // Show qty selector if this add-on has one
     const qtyEl = document.getElementById('qty-' + id);
     if (qtyEl) qtyEl.style.display = 'block';
   }
