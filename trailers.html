@@ -287,7 +287,7 @@
     </div>
 
     <!-- Front box cargo rack (requires modular storage) -->
-    <div class="addon-row addon-locked" id="row-frontrack" onclick="toggleAddon('frontrack')">
+    <div class="addon-row" id="row-frontrack" onclick="toggleAddon('frontrack')">
       <div class="addon-check" id="addon-frontrack"></div>
       <div style="flex:1;">
         <p style="font-size:13px;font-weight:500;color:var(--oo-cream);margin-bottom:2px;">Front box cargo rack</p>
@@ -297,7 +297,7 @@
     </div>
 
     <!-- Shower system (requires modular storage) -->
-    <div class="addon-row addon-locked" id="row-shower" onclick="toggleAddon('shower')">
+    <div class="addon-row" id="row-shower" onclick="toggleAddon('shower')">
       <div class="addon-check" id="addon-shower"></div>
       <div style="flex:1;">
         <p style="font-size:13px;font-weight:500;color:var(--oo-cream);margin-bottom:2px;">Shower system</p>
@@ -522,7 +522,10 @@
 </footer>
 
 
+
+<script src="/js/main.js"></script>
 <script>
+// ─── Configurator — overrides any main.js defaults ───
 // ─── Trim → included add-ons map ───
 const TRIM_INCLUDED = {
   standard:   [],
@@ -732,6 +735,5 @@ document.addEventListener('DOMContentLoaded', function() {
   updateAddonStates();
 });
 </script>
-<script src="/js/main.js"></script>
 </body>
 </html>
