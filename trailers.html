@@ -197,6 +197,7 @@
       <div style="flex:1;">
         <p style="font-size:13px;font-weight:500;color:var(--oo-cream);margin-bottom:2px;">Power &amp; solar system</p>
         <span style="font-size:12px;">Solar-ready power with battery management.</span>
+        <span id="hint-solar" style="font-size:11px;color:#e8a857;display:none;margin-top:3px;">Requires modular storage boxes.</span>
       </div>
       <span style="font-size:12px;color:var(--oo-amber-light);font-weight:500;white-space:nowrap;" id="price-solar">TBD</span>
     </div>
@@ -207,6 +208,7 @@
       <div style="flex:1;">
         <p style="font-size:13px;font-weight:500;color:var(--oo-cream);margin-bottom:2px;">Onboard water system</p>
         <span style="font-size:12px;">Integrated tank, pump, and plumbing.</span>
+        <span id="hint-water" style="font-size:11px;color:#e8a857;display:none;margin-top:3px;">Requires modular storage boxes and power &amp; solar.</span>
       </div>
       <span style="font-size:12px;color:var(--oo-amber-light);font-weight:500;white-space:nowrap;" id="price-water">TBD</span>
     </div>
@@ -217,6 +219,7 @@
       <div style="flex:1;">
         <p style="font-size:13px;font-weight:500;color:var(--oo-cream);margin-bottom:2px;">Kitchenette</p>
         <span style="font-size:12px;">Compact cook station with burner and prep surface.</span>
+        <span id="hint-kitchen" style="font-size:11px;color:#e8a857;display:none;margin-top:3px;">Requires modular storage boxes.</span>
       </div>
       <span style="font-size:12px;color:var(--oo-amber-light);font-weight:500;white-space:nowrap;" id="price-kitchen">TBD</span>
     </div>
@@ -227,6 +230,7 @@
       <div style="flex:1;">
         <p style="font-size:13px;font-weight:500;color:var(--oo-cream);margin-bottom:2px;">Onboard air compressor</p>
         <span style="font-size:12px;">Integrated air compressor for tire inflation.</span>
+        <span id="hint-aircomp" style="font-size:11px;color:#e8a857;display:none;margin-top:3px;">Requires modular storage boxes and power &amp; solar.</span>
       </div>
       <span style="font-size:12px;color:var(--oo-amber-light);font-weight:500;white-space:nowrap;" id="price-aircomp">TBD</span>
     </div>
@@ -292,6 +296,7 @@
       <div style="flex:1;">
         <p style="font-size:13px;font-weight:500;color:var(--oo-cream);margin-bottom:2px;">Front box cargo rack</p>
         <span style="font-size:12px;" id="note-frontrack">Mounts to the front storage box for additional cargo carrying capacity. <strong style="color:var(--oo-amber-light);">Requires modular storage boxes.</strong></span>
+        <span id="hint-frontrack" style="font-size:11px;color:#e8a857;display:none;margin-top:3px;">Requires modular storage boxes.</span>
       </div>
       <span style="font-size:12px;color:var(--oo-amber-light);font-weight:500;white-space:nowrap;">TBD</span>
     </div>
@@ -302,6 +307,7 @@
       <div style="flex:1;">
         <p style="font-size:13px;font-weight:500;color:var(--oo-cream);margin-bottom:2px;">Shower system</p>
         <span style="font-size:12px;">Propane hot water heater and shower enclosure, removable-mounted to the front storage box. Can be connected to an auxiliary water source or upgraded to the onboard water system. <strong style="color:var(--oo-amber-light);">Requires modular storage boxes.</strong></span>
+        <span id="hint-shower" style="font-size:11px;color:#e8a857;display:none;margin-top:3px;">Requires modular storage boxes.</span>
       </div>
       <span style="font-size:12px;color:var(--oo-amber-light);font-weight:500;white-space:nowrap;">TBD</span>
     </div>
@@ -530,23 +536,45 @@
 var currentTrim = 'standard';
 var selectedAddons = {};
 
-// What each trim includes (gets greyed out)
+// What each trim includes (greyed out — can't select)
 var TRIM_INCLUDED = {
   standard:   [],
   field:      ['modular'],
-  expedition: ['modular','solar','water','kitchen'],
+  expedition: ['modular','solar','water','kitchen','aircomp'],
   summit:     ['modular','solar','water','kitchen','aircomp']
 };
 
-// Add-ons that need modular storage unlocked first
-var REQUIRES_MODULAR = ['frontrack','shower'];
+// Requires modular storage to be active (included or selected)
+var REQUIRES_MODULAR = ['frontrack','shower','solar','kitchen','water','aircomp'];
 
-// Add-ons that show a quantity selector when checked
-var QTY_ADDONS = ['moto','atv','kayak','wheels'];
+// Requires solar to be active (included or selected)
+var REQUIRES_SOLAR = ['water','aircomp'];
+
+// Requires modular but NOT solar
+var REQUIRES_MODULAR_ONLY = ['frontrack','shower','kitchen'];
+
+// Add-ons with quantity selectors
+var HAS_QTY = ['moto','atv','kayak','wheels'];
 
 function isModularActive() {
   var inc = TRIM_INCLUDED[currentTrim] || [];
   return inc.indexOf('modular') >= 0 || !!selectedAddons['modular'];
+}
+
+function isSolarActive() {
+  var inc = TRIM_INCLUDED[currentTrim] || [];
+  return inc.indexOf('solar') >= 0 || !!selectedAddons['solar'];
+}
+
+function canSelect(id) {
+  var inc = TRIM_INCLUDED[currentTrim] || [];
+  // Already included in trim
+  if (inc.indexOf(id) >= 0) return false;
+  // Needs modular
+  if (REQUIRES_MODULAR.indexOf(id) >= 0 && !isModularActive()) return false;
+  // Needs solar (on top of modular)
+  if (REQUIRES_SOLAR.indexOf(id) >= 0 && !isSolarActive()) return false;
+  return true;
 }
 
 function selectTrim(trimId, trimName) {
@@ -554,24 +582,19 @@ function selectTrim(trimId, trimName) {
   document.querySelectorAll('.trim-card').forEach(function(c) { c.classList.remove('selected'); });
   var card = document.getElementById('trim-' + trimId);
   if (card) card.classList.add('selected');
-  // Uncheck any addons now included in this trim
-  var inc = TRIM_INCLUDED[trimId] || [];
-  inc.forEach(function(id) {
-    delete selectedAddons[id];
+
+  // Clear all checked addons
+  selectedAddons = {};
+  // Clear all qty selectors and checks
+  var allIds = ['modular','solar','water','kitchen','aircomp','moto','atv','kayak','frontrack','shower','wheels','awning'];
+  allIds.forEach(function(id) {
     var chk = document.getElementById('addon-' + id);
-    if (chk) { chk.classList.remove('checked'); chk.innerHTML = ''; }
+    if (chk) { chk.classList.remove('on'); chk.innerHTML = ''; }
     var qty = document.getElementById('qty-' + id);
     if (qty) qty.style.display = 'none';
   });
-  // If modular is no longer active, uncheck dependents
-  if (!isModularActive()) {
-    REQUIRES_MODULAR.forEach(function(id) {
-      delete selectedAddons[id];
-      var chk = document.getElementById('addon-' + id);
-      if (chk) { chk.classList.remove('checked'); chk.innerHTML = ''; }
-    });
-  }
-  renderAddons();
+
+  render();
   updateSummary();
 }
 
@@ -591,59 +614,84 @@ function toggleAddon(id) {
   // Can't toggle if included in trim
   if (inc.indexOf(id) >= 0) return;
 
-  // Can't toggle modular-dependent addons without modular
-  if (REQUIRES_MODULAR.indexOf(id) >= 0 && !isModularActive()) return;
+  // Check if selectable
+  if (!canSelect(id)) return;
 
   var chk = document.getElementById('addon-' + id);
   var qty = document.getElementById('qty-' + id);
 
   if (selectedAddons[id]) {
-    // Uncheck
+    // Unchecking — cascade uncheck dependents
     delete selectedAddons[id];
-    if (chk) { chk.classList.remove('checked'); chk.innerHTML = ''; }
+    if (chk) { chk.classList.remove('on'); chk.innerHTML = ''; }
     if (qty) qty.style.display = 'none';
-    // If unchecking modular, also uncheck dependents
+
+    // If unchecking modular — uncheck everything that needs modular
     if (id === 'modular') {
       REQUIRES_MODULAR.forEach(function(dep) {
         delete selectedAddons[dep];
         var dc = document.getElementById('addon-' + dep);
-        if (dc) { dc.classList.remove('checked'); dc.innerHTML = ''; }
+        if (dc) { dc.classList.remove('on'); dc.innerHTML = ''; }
+        var dq = document.getElementById('qty-' + dep);
+        if (dq) dq.style.display = 'none';
       });
     }
+
+    // If unchecking solar — uncheck water and aircomp
+    if (id === 'solar') {
+      REQUIRES_SOLAR.forEach(function(dep) {
+        delete selectedAddons[dep];
+        var dc = document.getElementById('addon-' + dep);
+        if (dc) { dc.classList.remove('on'); dc.innerHTML = ''; }
+        var dq = document.getElementById('qty-' + dep);
+        if (dq) dq.style.display = 'none';
+      });
+    }
+
   } else {
-    // Check
+    // Checking
     selectedAddons[id] = true;
     if (chk) {
-      chk.classList.add('checked');
+      chk.classList.add('on');
       chk.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     }
     if (qty) qty.style.display = 'block';
   }
 
-  renderAddons();
+  render();
   updateSummary();
 }
 
-function renderAddons() {
+function render() {
   var inc = TRIM_INCLUDED[currentTrim] || [];
-  var modActive = isModularActive();
   var allIds = ['modular','solar','water','kitchen','aircomp','moto','atv','kayak','frontrack','shower','wheels','awning'];
 
   allIds.forEach(function(id) {
     var row = document.getElementById('row-' + id);
-    var priceEl = document.getElementById('price-' + id);
     if (!row) return;
 
-    // Clear state classes
+    var priceEl = document.getElementById('price-' + id);
+
     row.classList.remove('is-included','is-locked','is-unlocked');
 
     if (inc.indexOf(id) >= 0) {
+      // Included in this trim
       row.classList.add('is-included');
       if (priceEl) priceEl.innerHTML = '<span style="font-size:11px;color:#4aab96;font-weight:500;">Included in your trim</span>';
-    } else if (REQUIRES_MODULAR.indexOf(id) >= 0) {
-      row.classList.add(modActive ? 'is-unlocked' : 'is-locked');
+
+    } else if (!canSelect(id)) {
+      // Locked due to dependency
+      row.classList.add('is-locked');
+      // Uncheck if was checked
+      delete selectedAddons[id];
+      var chk = document.getElementById('addon-' + id);
+      if (chk) { chk.classList.remove('on'); chk.innerHTML = ''; }
+      var qty = document.getElementById('qty-' + id);
+      if (qty) qty.style.display = 'none';
       if (priceEl && priceEl.innerHTML.indexOf('Included') >= 0) priceEl.innerHTML = 'TBD';
+
     } else {
+      // Selectable
       row.classList.add('is-unlocked');
       if (priceEl && priceEl.innerHTML.indexOf('Included') >= 0) priceEl.innerHTML = 'TBD';
     }
@@ -651,9 +699,28 @@ function renderAddons() {
     // Tie-down mount notes
     var noteEl = document.getElementById('note-' + id);
     if (noteEl && ['moto','atv','kayak'].indexOf(id) >= 0) {
-      noteEl.textContent = modActive
+      noteEl.textContent = isModularActive()
         ? 'Mounts to your modular storage boxes for a clean, integrated setup.'
         : 'Mounts to the trailer frame and deck. If you add modular storage boxes, mounts will be repositioned to the storage boxes.';
+    }
+
+    // Update dependency hint labels
+    var hintEl = document.getElementById('hint-' + id);
+    if (hintEl) {
+      if (id === 'solar' && !isModularActive()) {
+        hintEl.style.display = 'inline';
+        hintEl.textContent = 'Requires modular storage boxes.';
+      } else if (REQUIRES_SOLAR.indexOf(id) >= 0 && !isSolarActive()) {
+        hintEl.style.display = 'inline';
+        hintEl.textContent = !isModularActive()
+          ? 'Requires modular storage boxes and power & solar.'
+          : 'Requires power & solar system.';
+      } else if (REQUIRES_MODULAR_ONLY.indexOf(id) >= 0 && !isModularActive()) {
+        hintEl.style.display = 'inline';
+        hintEl.textContent = 'Requires modular storage boxes.';
+      } else {
+        hintEl.style.display = 'none';
+      }
     }
   });
 }
@@ -688,7 +755,7 @@ function scrollToQuote() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  renderAddons();
+  render();
   updateSummary();
 });
 </script>
