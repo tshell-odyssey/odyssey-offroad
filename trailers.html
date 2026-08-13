@@ -627,7 +627,6 @@ function toggleAddon(id) {
 function renderAddons() {
   var inc = TRIM_INCLUDED[currentTrim] || [];
   var modActive = isModularActive();
-
   var allIds = ['modular','solar','water','kitchen','aircomp','moto','atv','kayak','frontrack','shower','wheels','awning'];
 
   allIds.forEach(function(id) {
@@ -635,27 +634,17 @@ function renderAddons() {
     var priceEl = document.getElementById('price-' + id);
     if (!row) return;
 
+    // Clear state classes
+    row.classList.remove('is-included','is-locked','is-unlocked');
+
     if (inc.indexOf(id) >= 0) {
-      // Included in trim — grey out
-      row.style.opacity = '0.45';
-      row.style.pointerEvents = 'none';
+      row.classList.add('is-included');
       if (priceEl) priceEl.innerHTML = '<span style="font-size:11px;color:#4aab96;font-weight:500;">Included in your trim</span>';
-
     } else if (REQUIRES_MODULAR.indexOf(id) >= 0) {
-      // Needs modular — lock or unlock
-      if (modActive) {
-        row.style.opacity = '1';
-        row.style.pointerEvents = 'auto';
-      } else {
-        row.style.opacity = '0.35';
-        row.style.pointerEvents = 'none';
-      }
+      row.classList.add(modActive ? 'is-unlocked' : 'is-locked');
       if (priceEl && priceEl.innerHTML.indexOf('Included') >= 0) priceEl.innerHTML = 'TBD';
-
     } else {
-      // Normal
-      row.style.opacity = '1';
-      row.style.pointerEvents = 'auto';
+      row.classList.add('is-unlocked');
       if (priceEl && priceEl.innerHTML.indexOf('Included') >= 0) priceEl.innerHTML = 'TBD';
     }
 
