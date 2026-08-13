@@ -511,3 +511,20 @@ p  { color: var(--oo-muted); line-height: 1.8; }
   h1 { font-size: 22px; }
   .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
+
+/* ── ADDON ROW STATES (Configurator) ── */
+.addon-row.is-included {
+  opacity: 0.45;
+  pointer-events: none !important;
+  cursor: default !important;
+}
+.addon-row.is-locked {
+  opacity: 0.35;
+  pointer-events: none !important;
+  cursor: default !important;
+}
+.addon-row.is-unlocked {
+  opacity: 1;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
