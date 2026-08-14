@@ -10,8 +10,8 @@
 .compass-bg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;max-width:1536px;pointer-events:none;z-index:0;}
 .nav{padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(30,33,34,0.95);}
 .nav-logo{display:flex;align-items:center;gap:10px;}
-.nav-logo img{height:38px;width:38px;object-fit:cover;border-radius:50%;border:1px solid var(--border);}
-.nav-logo span{font-size:14px;font-weight:500;color:var(--text);letter-spacing:0.04em;}
+.nav-logo img{height:57px;width:57px;object-fit:cover;border-radius:50%;border:1px solid var(--border);}
+.nav-logo span{font-size:21px;font-weight:500;color:var(--text);letter-spacing:0.04em;}
 .btn-primary{padding:7px 16px;background:var(--teal);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;}
 .hero{padding:56px 40px 48px;background:linear-gradient(160deg,rgba(30,33,34,0.92) 55%,rgba(26,42,38,0.92) 100%);text-align:center;border-bottom:1px solid var(--border);}
 .status-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
@@ -65,7 +65,7 @@ h3{font-size:14px;font-weight:500;color:var(--cream);}
       <img src="/images/logo/FullLogo.jpg" alt="Odyssey Off-Road" />
       <span>Odyssey Off-Road</span>
     </div>
-    <button class="btn-primary">Join waitlist</button>
+    <a href="#waitlist-cta" class="btn-primary" style="text-decoration:none;display:inline-block;">Join waitlist</a>
   </div>
 
   <!-- HERO -->
@@ -134,13 +134,18 @@ h3{font-size:14px;font-weight:500;color:var(--cream);}
   </div>
 
   <!-- WAITLIST -->
-  <div class="section section-teal" style="text-align:center;">
+  <div class="section section-teal" style="text-align:center;" id="waitlist-cta">
     <span class="label">Be first in line</span>
     <h2 style="max-width:420px;margin:0 auto 10px;">This isn't just a waitlist.<br>It's where the relationship starts.</h2>
     <p style="max-width:440px;margin:0 auto 28px;color:var(--muted);">Get priority access, prototype reveals, and honest updates straight from the Odyssey Team — because you're part of this from day one.</p>
     <div class="waitlist-form">
-      <input type="email" placeholder="Your email address" />
-      <button>Join the waitlist</button>
+      <form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="waitlist" />
+        <input type="hidden" name="bot-field" style="display:none;" />
+        <input type="email" name="email" placeholder="Your email address" required />
+        <button type="submit">Join the waitlist</button>
+        <div class="form-success mt-12" style="display:none;"><p>✓ You're on the list!</p></div>
+      </form>
       <p style="font-size:11px;color:var(--muted2);margin-top:10px;opacity:0.7;">No spam. Unsubscribe anytime. Priority access for waitlist members.</p>
     </div>
   </div>
@@ -169,9 +174,8 @@ h3{font-size:14px;font-weight:500;color:var(--cream);}
     <div class="divider"></div>
     <p style="max-width:440px;margin:0 auto 24px;color:var(--muted);">The Odyssey Team is documenting the entire build process. Follow along for behind-the-scenes updates, fabrication progress, and trail content.</p>
     <div>
-      <a class="social-btn" href="#"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="3.5" stroke="var(--amber)" stroke-width="1.2" fill="none"/><circle cx="8" cy="8" r="2.5" stroke="var(--amber)" stroke-width="1.2" fill="none"/><circle cx="11.5" cy="4.5" r="0.8" fill="var(--amber)"/></svg>Follow on Instagram</a>
-      <a class="social-btn" href="#"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="3" stroke="var(--teal)" stroke-width="1.2" fill="none"/><path d="M6.5 5.5L10.5 8L6.5 10.5Z" stroke="var(--teal)" stroke-width="1.2" stroke-linejoin="round" fill="none"/></svg>Subscribe on YouTube</a>
-      <a class="social-btn" href="#"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="var(--teal)" stroke-width="1.2" fill="none"/><path d="M1 5L8 9L15 5" stroke="var(--teal)" stroke-width="1.2" stroke-linecap="round"/></svg>Email us directly</a>
+      <a class="social-btn" href="https://www.facebook.com/people/Odyssey-Offroad/61573852347519/" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 2H8.5C7 2 6 3 6 4.5V6.5H4.5V9H6V14H8.5V9H10L10.5 6.5H8.5V4.8C8.5 4.3 8.8 4 9.3 4H10.5V2Z" stroke="var(--teal)" stroke-width="1.2" fill="none" stroke-linejoin="round"/></svg>Follow on Facebook</a>
+      <a class="social-btn" href="mailto:info@odysseyoffroad.com"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="var(--teal)" stroke-width="1.2" fill="none"/><path d="M1 5L8 9L15 5" stroke="var(--teal)" stroke-width="1.2" stroke-linecap="round"/></svg>Email us directly</a>
     </div>
   </div>
 
@@ -182,9 +186,8 @@ h3{font-size:14px;font-weight:500;color:var(--cream);}
       <span style="font-size:12px;color:var(--muted);">© 2025 Odyssey Off-Road</span>
     </div>
     <div class="footer-links">
-      <a href="#">Instagram</a>
-      <a href="#">YouTube</a>
-      <a href="#">Contact</a>
+      <a href="https://www.facebook.com/people/Odyssey-Offroad/61573852347519/" target="_blank" rel="noopener">Facebook</a>
+      <a href="mailto:info@odysseyoffroad.com">Contact</a>
     </div>
   </div>
 
