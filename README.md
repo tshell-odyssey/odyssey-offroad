@@ -24,8 +24,7 @@
 ## Forms
 
 All forms use Netlify Forms. Submissions notify:
-- `tshell@odysseyoffroad.com`
-- `kshell@odysseyoffroad.com`
+- `info@odysseyoffroad.com`
 
 Configure notifications in: Netlify Dashboard → Forms → [form name] → Notifications
 
