@@ -23,47 +23,56 @@
   from = "/coming-soon"
   to   = "/coming-soon.html"
   status = 200
+  force = true
 
 # Root and every real-site route redirect to /coming-soon.
 [[redirects]]
   from = "/"
   to   = "/coming-soon"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/index.html"
   to   = "/coming-soon"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/our-story*"
   to   = "/coming-soon"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/build-progress*"
   to   = "/coming-soon"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/trailers*"
   to   = "/coming-soon"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/field-notes*"
   to   = "/coming-soon"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/contact*"
   to   = "/coming-soon"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/posts/*"
   to   = "/coming-soon"
   status = 302
+  force = true
 
 # ── CLEAN URLs (removes .html from browser address bar) ──
 # Restore these (and delete the "COMING SOON MODE" block above) when you launch the full site.
