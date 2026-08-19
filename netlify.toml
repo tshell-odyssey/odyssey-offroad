@@ -106,6 +106,12 @@
 #   to   = "/posts/:slug.html"
 #   status = 200
 
+# Sitemap exception — must be above the catch-all
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap.xml"
+  status = 200
+  force = true
 # ── 404 HANDLER ──
 # While in coming-soon mode, unknown routes fall through to /coming-soon (see catch-all above).
 # When you launch the full site, change "to" back to "/index.html".
