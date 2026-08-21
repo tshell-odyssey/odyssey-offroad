@@ -1,123 +1,60 @@
 # ============================================================
-# ODYSSEY OFF-ROAD — Netlify Configuration
-# odysseyoffroad.com
+# ODYSSEY OFF-ROAD — Netlify Configuration (DEV BRANCH ONLY)
+# This file belongs on the "dev" branch, NOT on "main".
 #
-# ── COMING SOON MODE — ACTIVE ──
-# The real site (index.html, trailers.html, our-story.html, etc.)
-# stays in the repo untouched and in development. Publicly, every
-# route — including the root "/" — redirects to /coming-soon, so
-# that's the only page visitors can actually see.
+# Unlike the production config (which forces every route to
+# /coming-soon), this version serves the full site normally —
+# real homepage, trailers, our-story, etc. — with clean URLs.
 #
-# TO LAUNCH THE FULL SITE LATER:
-#   1. Delete the "COMING SOON MODE" redirect block below
-#   2. Uncomment the "CLEAN URLs" block below
-#   3. Restore the 404 handler to point back to /index.html
+# This lets you preview the in-progress site at its Netlify
+# branch-deploy URL (something like dev--odysseyoffroad.netlify.app)
+# without exposing it on your live custom domain, which stays on
+# the "main" branch's coming-soon-only config.
 # ============================================================
 
 [build]
   publish = "."
 
-# ── COMING SOON MODE (active) ──
-# Clean URL for the coming-soon page itself.
+# ── CLEAN URLs (removes .html from browser address bar) ──
+[[redirects]]
+  from = "/our-story"
+  to   = "/our-story.html"
+  status = 200
+
+[[redirects]]
+  from = "/build-progress"
+  to   = "/build-progress.html"
+  status = 200
+
+[[redirects]]
+  from = "/trailers"
+  to   = "/trailers.html"
+  status = 200
+
+[[redirects]]
+  from = "/field-notes"
+  to   = "/field-notes.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to   = "/contact.html"
+  status = 200
+
 [[redirects]]
   from = "/coming-soon"
   to   = "/coming-soon.html"
   status = 200
-  force = true
-
-# Root and every real-site route redirect to /coming-soon.
-[[redirects]]
-  from = "/"
-  to   = "/coming-soon"
-  status = 302
-  force = true
 
 [[redirects]]
-  from = "/index.html"
-  to   = "/coming-soon"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/our-story*"
-  to   = "/coming-soon"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/build-progress*"
-  to   = "/coming-soon"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/trailers*"
-  to   = "/coming-soon"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/field-notes*"
-  to   = "/coming-soon"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/contact*"
-  to   = "/coming-soon"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/posts/*"
-  to   = "/coming-soon"
-  status = 302
-  force = true
-
-# ── CLEAN URLs (removes .html from browser address bar) ──
-# Restore these (and delete the "COMING SOON MODE" block above) when you launch the full site.
-# [[redirects]]
-#   from = "/our-story"
-#   to   = "/our-story.html"
-#   status = 200
-#
-# [[redirects]]
-#   from = "/build-progress"
-#   to   = "/build-progress.html"
-#   status = 200
-#
-# [[redirects]]
-#   from = "/trailers"
-#   to   = "/trailers.html"
-#   status = 200
-#
-# [[redirects]]
-#   from = "/field-notes"
-#   to   = "/field-notes.html"
-#   status = 200
-#
-# [[redirects]]
-#   from = "/contact"
-#   to   = "/contact.html"
-#   status = 200
-#
-# [[redirects]]
-#   from = "/posts/:slug"
-#   to   = "/posts/:slug.html"
-#   status = 200
-
-# Sitemap exception — must be above the catch-all
-[[redirects]]
-  from = "/sitemap.xml"
-  to = "/sitemap.xml"
+  from = "/posts/:slug"
+  to   = "/posts/:slug.html"
   status = 200
-  force = true
+
 # ── 404 HANDLER ──
-# While in coming-soon mode, unknown routes fall through to /coming-soon (see catch-all above).
-# When you launch the full site, change "to" back to "/index.html".
 [[redirects]]
   from   = "/*"
-  to     = "/coming-soon"
+  to     = "/index.html"
   status = 404
 
 # ── SECURITY HEADERS ──
